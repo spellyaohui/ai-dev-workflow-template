@@ -1,0 +1,92 @@
+---
+description: Security rules for repository changes
+alwaysApply: true
+---
+
+# Security Rules
+
+Security principles:
+
+- Treat authentication, authorization, secrets, sensitive data, and trust boundaries as security-critical.
+- Preserve existing security controls unless the approved specification explicitly requires a reviewed change.
+- Prefer least privilege, deny-by-default behavior, and fail-closed behavior where applicable.
+- Do not weaken security merely to simplify implementation or testing.
+
+Secrets and credentials:
+
+- Never commit passwords, tokens, API keys, private keys, certificates, connection secrets, or other credentials.
+- Do not hardcode secrets in source code, configuration, tests, examples, logs, or documentation.
+- Use the repository's existing approved secret-management mechanism when one exists.
+- Do not copy production secrets into development, test, or example environments.
+- If a required secret or credential is unavailable, report the task as blocked instead of inventing or embedding one.
+
+Authentication:
+
+- Do not bypass, disable, weaken, or replace authentication controls unless explicitly approved.
+- Preserve existing session, token, credential, and identity validation behavior unless the approved specification requires a change.
+- Do not introduce authentication shortcuts, backdoors, hidden users, or default credentials.
+- Do not treat client-provided identity claims as trusted without the repository's required validation.
+
+Authorization:
+
+- Enforce authorization at the appropriate trusted boundary, not only in user-interface code.
+- Verify permissions, ownership, role, scope, or tenant boundaries where applicable before performing protected actions.
+- Do not broaden privileges or access scope beyond the approved contract.
+- Do not bypass permission checks to make a feature or test pass.
+- Prefer least-privilege access when adding or changing permissions.
+
+Input validation:
+
+- Treat external input as untrusted.
+- Validate relevant type, format, range, length, structure, and allowed values before trusted use.
+- Do not rely solely on client-side validation for security-sensitive decisions.
+- Use parameterized or otherwise safe repository-supported mechanisms instead of constructing executable queries or commands from untrusted input.
+- Encode or escape output appropriately for its destination context when applicable.
+
+Sensitive data:
+
+- Minimize exposure of personal, confidential, financial, authentication, and other sensitive data.
+- Do not return sensitive fields to callers that do not require them.
+- Do not expose secrets or sensitive values in logs, errors, debug output, fixtures, screenshots, or examples.
+- Preserve existing encryption, masking, redaction, and access-control protections.
+- Do not copy production-sensitive data into development or test artifacts unless explicitly approved and appropriately protected.
+
+Logging and errors:
+
+- Do not log secrets, credentials, authentication tokens, private keys, or sensitive request data.
+- Preserve useful diagnostic context without exposing sensitive implementation or user data.
+- Do not expose internal stack traces, credentials, secret values, or unnecessary system details to untrusted callers.
+- Do not replace security failures with fake success responses.
+- Preserve security-relevant failure signals where they are part of the existing contract.
+
+Dependencies:
+
+- Do not add or upgrade dependencies solely to bypass an existing security control.
+- Prefer existing repository capabilities over introducing new security-sensitive dependencies.
+- Do not disable dependency, integrity, signature, certificate, or package verification merely to make installation succeed.
+- If a dependency change materially affects authentication, authorization, cryptography, or sensitive-data handling, treat it as security-sensitive and keep it within the approved scope.
+
+Cryptography:
+
+- Use established platform or library cryptographic primitives instead of custom cryptography.
+- Do not invent encryption algorithms, signature schemes, password hashing schemes, or random-number generators.
+- Do not hardcode cryptographic keys, initialization secrets, or signing secrets.
+- Do not disable certificate validation, hostname verification, transport security, or equivalent protections unless explicitly approved.
+- Do not downgrade existing cryptographic protections merely for compatibility or convenience.
+
+Secure defaults:
+
+- Prefer secure defaults over permissive defaults.
+- Do not enable insecure debug, anonymous, public, or unrestricted access by default.
+- Do not silently fall back to weaker authentication, authorization, encryption, or validation.
+- Preserve security-relevant configuration defaults unless the approved specification explicitly changes them.
+- Make security-sensitive behavior explicit and reviewable.
+
+Stop and report BLOCKED when:
+
+- The approved specification would require weakening authentication, authorization, validation, encryption, or another existing security control without explicit approval.
+- Required security behavior is ambiguous.
+- A required secret, credential, certificate, key, or trusted configuration is unavailable.
+- The task would require bypassing a permission, identity, tenant, ownership, or trust-boundary check.
+- Sensitive-data exposure, retention, transport, or access behavior would materially change outside the approved scope.
+- Production security behavior would materially change outside the approved scope.
