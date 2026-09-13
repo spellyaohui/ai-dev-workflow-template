@@ -1,0 +1,53 @@
+---
+description: Testing and verification rules for repository changes
+alwaysApply: true
+---
+
+# Testing and Verification Rules
+
+Before implementation:
+
+- Inspect the repository for existing test frameworks, test directories, scripts, CI checks, lint commands, type checks, build commands, and validation tools.
+- Identify which existing verification commands are relevant to the approved change.
+- Do not invent repository commands that do not exist.
+- Do not introduce a new testing framework unless the approved specification requires it.
+
+When behavior changes:
+
+- Add or update tests when an applicable test system exists.
+- Prefer tests that verify observable behavior and contracts.
+- Do not write tests that merely reproduce implementation details.
+- Include relevant success, failure, boundary, and regression cases where applicable.
+
+When fixing a bug:
+
+- Reproduce the reported failure before changing behavior when reasonably possible.
+- Prefer adding a regression test that fails before the fix and passes after the fix when an applicable test system exists.
+- Do not change unrelated behavior while fixing the reported defect.
+
+Existing tests:
+
+- Do not delete, disable, skip, weaken, or rewrite existing tests solely to make a change pass.
+- Do not reduce assertions or coverage merely to accommodate an implementation.
+- If an existing test conflicts with an approved specification, report the conflict instead of silently changing the test.
+
+Verification order:
+
+- Run the most relevant targeted checks first.
+- After targeted checks pass, run broader repository-defined checks when available and relevant.
+- Run lint, type-check, build, schema validation, or other repository-defined verification when applicable.
+- Inspect the final diff after verification.
+
+Reporting:
+
+- Report the exact verification commands that were actually run.
+- Report observed pass or fail results.
+- Never report a command as passing if it was not executed.
+- If no applicable automated tests or verification commands exist, explicitly report that none were found.
+
+Stop and report BLOCKED when:
+
+- A required verification command fails and cannot be fixed within the approved scope.
+- Required tests cannot run because of a repository, environment, dependency, or infrastructure problem.
+- Passing the task would require weakening or bypassing existing tests.
+- Verification reveals behavior outside the approved contract has changed.

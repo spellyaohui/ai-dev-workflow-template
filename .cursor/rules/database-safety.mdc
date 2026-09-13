@@ -1,0 +1,107 @@
+---
+description: Database safety rules for repository changes
+alwaysApply: true
+---
+
+# Database Safety Rules
+
+Database safety principles:
+
+- Treat schema changes, migrations, destructive operations, production data changes, financial data, audit data, and integrity constraints as high-risk.
+- Preserve existing data semantics, integrity protections, and compatibility unless the approved specification explicitly requires a reviewed change.
+- Prefer reversible, incremental, and reviewable database changes.
+- Do not trade data safety for implementation speed or convenience.
+
+Destructive operations:
+
+- Do not drop tables, columns, indexes, constraints, schemas, or databases unless explicitly approved.
+- Do not truncate tables or perform destructive deletes unless explicitly approved.
+- Do not rewrite, purge, overwrite, or replace stored data destructively unless explicitly approved.
+- Do not remove historical, audit, financial, or reference data merely to make a task easier.
+- If destructive behavior is required, make its scope, impact, and recovery expectations explicit and reviewable.
+
+Schema changes:
+
+- Keep schema changes explicit and limited to the approved contract.
+- Preserve backward compatibility where reasonably possible unless a breaking schema change is explicitly approved.
+- Do not silently change column meaning, nullability, default behavior, keys, relationships, or data type semantics.
+- Do not repurpose an existing field for a materially different meaning without explicit approval.
+- Do not make unrelated schema cleanup part of an approved feature change.
+
+Migrations:
+
+- Use the repository's existing migration mechanism when one exists.
+- Do not bypass or replace the repository's migration process merely for convenience.
+- Keep migrations reviewable and deterministic.
+- Do not hide schema changes inside unrelated application startup or runtime behavior.
+- Do not remove or rewrite existing migrations merely to make a new change easier.
+- If a migration is not safely reversible, make that limitation explicit.
+
+Transactions and rollback:
+
+- Use transactions for multi-step database changes when partial completion would violate expected consistency and the repository supports transactional handling.
+- Consider rollback behavior before making multi-step writes.
+- Do not report success when only part of a required database operation completed.
+- Preserve useful failure context when a transaction or database operation fails.
+- Do not introduce retry behavior that can duplicate non-idempotent writes without appropriate safeguards.
+
+Bulk data changes:
+
+- Treat bulk updates, deletes, replacements, and backfills as high-risk.
+- Verify the intended target set before applying a broad data change.
+- Use sufficiently narrow predicates or equivalent scoping controls for updates and deletes.
+- Do not perform an unrestricted or unexpectedly broad update or delete merely because it is simpler.
+- For large or production-sensitive data changes, make batching, failure handling, and restart behavior explicit when relevant.
+- Do not assume a bulk operation is safe solely because it succeeds syntactically.
+
+Data integrity:
+
+- Preserve primary keys, foreign keys, uniqueness rules, required relationships, and other integrity protections unless explicitly approved.
+- Do not disable or remove integrity checks merely to make a write succeed.
+- Do not insert placeholder, fabricated, or inconsistent values merely to satisfy constraints.
+- Preserve existing domain invariants and cross-record consistency.
+- If approved behavior conflicts with an existing integrity rule, report the conflict instead of silently bypassing it.
+
+Constraints and indexes:
+
+- Do not remove constraints, indexes, or keys solely to simplify implementation.
+- Treat changes to uniqueness, referential integrity, and key structure as contract changes.
+- Do not alter index or constraint semantics outside the approved scope.
+- Consider the data-integrity and operational impact of adding, removing, or changing constraints.
+- Do not assume an index or constraint is unused without repository evidence.
+
+Production data:
+
+- Treat production data as non-disposable.
+- Do not copy, reset, purge, anonymize, or modify production data outside the approved scope.
+- Do not use production data as disposable test data.
+- Do not perform irreversible production-data changes without an explicit recovery or rollback approach where reasonably possible.
+- Keep production-impacting changes explicit and reviewable.
+- If the environment cannot be confidently identified, do not perform destructive or irreversible operations.
+
+Backup and recovery:
+
+- Consider recovery requirements before high-risk or irreversible database changes.
+- Do not claim a destructive or irreversible change is safe without an appropriate recovery path when recovery is reasonably required.
+- Do not overwrite or invalidate existing recovery mechanisms merely for convenience.
+- Preserve repository-defined backup, restore, migration, and recovery procedures.
+- If safe recovery cannot be established for a high-risk change, report the task as blocked.
+
+Financial and audit data:
+
+- Treat financial, accounting, billing, payment, ledger, balance, settlement, audit, and historical records as high-integrity data.
+- Do not change financial calculation semantics, accounting meaning, audit meaning, or historical interpretation outside the approved specification.
+- Do not silently rewrite historical financial or audit records to match new behavior.
+- Preserve traceability when correcting financial or audit-sensitive data where the existing system requires it.
+- Do not remove audit trails, reconciliation data, or historical evidence merely to simplify implementation.
+- Treat changes that affect balances, totals, settlements, accounting periods, or auditability as high-risk and explicitly reviewable.
+
+Stop and report BLOCKED when:
+
+- The approved specification would require an unapproved destructive schema or data operation.
+- A schema or migration change is ambiguous.
+- A required database change would materially alter existing data semantics outside the approved scope.
+- Safe rollback or recovery is required for a high-risk change but cannot be established.
+- A bulk data operation cannot be safely scoped.
+- Passing the task would require disabling or bypassing integrity constraints.
+- Financial, accounting, audit, historical, or production data behavior would materially change outside the approved scope.

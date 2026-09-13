@@ -1,0 +1,82 @@
+name: Implementation Spec
+description: Versioned implementation contract for Grok, Cursor, Verifier, and Merge Governor.
+title: "Spec: "
+body:
+  - type: dropdown
+    id: spec_status
+    attributes:
+      label: Spec Status
+      description: READY_FOR_APPROVAL is not approval. Set APPROVED only after explicit approval of this exact version.
+      options:
+        - DRAFT
+        - READY_FOR_APPROVAL
+        - APPROVED
+    validations:
+      required: true
+  - type: input
+    id: spec_version
+    attributes:
+      label: Spec Version
+      description: Use v<number>, for example v1.
+      placeholder: v1
+    validations:
+      required: true
+  - type: dropdown
+    id: risk_level
+    attributes:
+      label: Risk Level
+      description: UNKNOWN is not allowed; uncertainty must be classified HIGH.
+      options:
+        - LOW
+        - HIGH
+    validations:
+      required: true
+  - type: textarea
+    id: risk_categories
+    attributes:
+      label: Risk Categories
+      description: List applicable risk categories or state none.
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: State the requested outcome and relevant context.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Observable criteria the implementation must satisfy.
+    validations:
+      required: true
+  - type: textarea
+    id: affected_contracts
+    attributes:
+      label: Affected Contracts
+      description: APIs, schemas, files, behavior, compatibility, or other contracts affected.
+    validations:
+      required: true
+  - type: textarea
+    id: verification_plan
+    attributes:
+      label: Verification Plan
+      description: Tests, CI, inspection, and evidence required for verification.
+    validations:
+      required: true
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: Explicitly excluded work.
+    validations:
+      required: true
+  - type: textarea
+    id: known_risks
+    attributes:
+      label: Known Risks / Limitations
+      description: Known limitations, open risks, or state none.
+    validations:
+      required: true

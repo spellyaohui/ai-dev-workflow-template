@@ -1,0 +1,39 @@
+---
+description: Core AI development guardrails for all repository work
+alwaysApply: true
+---
+
+# Core AI Guardrails
+
+Before making changes:
+
+- Read the repository root `AGENTS.md`.
+- Read the approved specification or issue linked to the task.
+- Identify the exact acceptance criteria and non-goals.
+- Do not begin implementation if the approved contract is missing or ambiguous.
+
+During implementation:
+
+- Work only on a dedicated branch.
+- Do not modify unrelated files.
+- Do not expand scope beyond the approved contract.
+- Preserve backward compatibility unless a breaking change is explicitly approved.
+- Do not bypass tests, validation, authentication, authorization, or security controls.
+- Do not add dependencies unless required by the approved task.
+- Do not perform destructive data or schema operations unless explicitly approved.
+
+Before finishing:
+
+- Inspect the complete diff.
+- Confirm every acceptance criterion has observable evidence.
+- Run all repository-defined relevant verification commands.
+- Report actual observed results.
+- If required verification fails, do not claim completion.
+
+Stop and report BLOCKED when:
+
+- The approved specification conflicts with repository behavior.
+- Required behavior is ambiguous.
+- A breaking change is necessary but not approved.
+- A destructive database or data operation appears necessary.
+- Authentication, authorization, payment, financial calculation, audit, or production infrastructure behavior would materially change outside approved scope.

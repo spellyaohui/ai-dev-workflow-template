@@ -1,0 +1,116 @@
+---
+description: Pull request workflow and verification gates for repository changes
+alwaysApply: true
+---
+
+# Pull Request Workflow Rules
+
+Approved contract:
+
+- Begin implementation only from an explicitly approved and versioned specification or issue stored in GitHub.
+- Treat the approved GitHub specification as the authoritative implementation contract.
+- Do not treat chat messages, implementation notes, summaries, agent output, or pull request descriptions as replacements for the approved contract.
+- Do not reinterpret, expand, reduce, or silently modify approved acceptance criteria.
+- If the authoritative contract is missing, ambiguous, conflicting, or not explicitly approved, stop and report BLOCKED.
+
+Branch discipline:
+
+- Never implement directly on `main` or `master`.
+- Use a dedicated branch for each logical change.
+- Keep unrelated work out of the branch.
+- Do not reuse a branch whose unrelated history makes the approved change difficult to review.
+- Keep the branch focused on the approved contract.
+
+Pull request creation:
+
+- Create a pull request for implementation changes.
+- Target the repository's intended integration branch.
+- Keep the pull request focused on one approved logical change.
+- Link the exact approved GitHub specification or issue in the pull request description.
+- Do not merge the pull request as part of implementation.
+- Do not treat opening a pull request as evidence that the implementation is correct.
+
+Pull request description:
+
+The pull request description must preserve the approved contract and include:
+
+- The authoritative specification or issue reference.
+- The approved specification version when one exists.
+- The applicable acceptance criteria.
+- The affected contracts.
+- The verification performed and observed results.
+- The approved non-goals.
+- Known limitations, unresolved risks, or blocked checks when applicable.
+
+Do not omit, weaken, rewrite, or silently reinterpret approved acceptance criteria in the pull request description.
+
+Producer responsibilities:
+
+- The implementation agent or PR Producer may implement the approved change, create commits, push the implementation branch, and open or update the pull request.
+- The Producer must keep implementation within the approved contract.
+- The Producer must report actual verification performed and observed results.
+- The Producer must not approve its own implementation.
+- The Producer must not issue the authoritative PASS, BLOCK, or HOLD verification decision for its own pull request.
+- The Producer must not merge, deploy, release, or publish unless separately and explicitly authorized.
+
+Verifier responsibilities:
+
+- Verification must be independent from implementation.
+- The PR Verifier must use the approved GitHub specification as the contract source.
+- The Verifier must inspect the actual pull request diff and relevant repository evidence.
+- The Verifier must evaluate applicable tests, CI results, build results, validation output, and other observable evidence when available.
+- Do not accept Producer, Cursor, agent, or pull request claims as proof without independent evidence.
+- Verify acceptance criteria against observable repository state.
+- Check for unintended modifications, deletions, regressions, and scope expansion.
+- The Verifier must not modify implementation code while acting as the independent verifier.
+- The Verifier must not merge the pull request.
+
+Verifier outcomes:
+
+- `PASS` means the approved contract is satisfied by the verified pull request state and no blocking issue was found.
+- `BLOCK` means a contract violation, failed required check, regression, unsafe change, or other blocking defect exists.
+- `HOLD` means the Verifier cannot make a reliable PASS or BLOCK decision because required evidence, access, environment, dependency, or external information is unavailable.
+- `BLOCK` and `HOLD` both prevent merge.
+- A `PASS` is evidence of verification, not merge authorization.
+
+Verification validity:
+
+- A verification result applies only to the exact pull request state that was verified.
+- Bind a PASS decision to the verified pull request head commit SHA.
+- Any new commit pushed after PASS invalidates the previous PASS.
+- Rebasing, merging the base branch into the pull request branch, updating the branch, force-pushing, or otherwise changing the pull request head invalidates the previous PASS.
+- A material change to the pull request diff requires re-verification.
+- Do not reuse an earlier PASS for a changed head SHA.
+- After implementation changes made in response to BLOCK or HOLD, run independent verification again.
+
+Review and merge gates:
+
+- Do not enter the merge step until the independent Verifier returns PASS for the current pull request head SHA.
+- Before merge, confirm the pull request is still open and mergeable.
+- Before merge, confirm the pull request head SHA still matches the SHA that received PASS.
+- Before merge, inspect relevant required checks and confirm no new blocking failure exists.
+- If the pull request state changed after PASS, require re-verification before merge.
+- PASS does not grant merge authorization.
+- Merge only after explicit authorization from the authorized human or repository workflow.
+- Do not infer merge authorization from approval of the specification, approval of implementation, a PASS result, silence, prior merge history, or general permission to continue work.
+- Do not deploy, release, publish, or perform production actions merely because a pull request was merged.
+
+Contract and evidence integrity:
+
+- GitHub repository state is the source of truth for implementation and verification evidence.
+- Prefer diffs, commits, files, test output, CI results, logs, and repository metadata over textual claims.
+- Do not claim a test, build, validation, or check passed unless evidence shows it actually ran successfully.
+- If no applicable automated verification exists, state that explicitly rather than inventing verification.
+- Do not hide failed, skipped, unavailable, or inconclusive checks.
+
+Stop and report BLOCKED when:
+
+- No explicitly approved and versioned authoritative contract exists.
+- Acceptance criteria are ambiguous or conflict with repository behavior.
+- Implementation requires scope beyond the approved contract.
+- Required verification fails and cannot be corrected within the approved scope.
+- Passing verification would require weakening tests, validation, security, database safety, or repository controls.
+- The pull request contains unexplained or unrelated changes.
+- A previous PASS no longer matches the current pull request head SHA.
+- Merge is requested without a valid PASS for the current head SHA.
+- Merge authorization is absent or ambiguous.
