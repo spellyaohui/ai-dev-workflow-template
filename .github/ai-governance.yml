@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "risk_policy": {
+    "unknown_is_high": true
+  },
+  "auto_merge": {
+    "low_risk": true,
+    "high_risk": false
+  },
+  "post_merge_verification": {
+    "enabled": true
+  },
+  "high_risk_paths": [
+    ".github/workflows/**",
+    ".cursor/rules/**",
+    "AGENTS.md",
+    ".github/ai-governance.yml",
+    "bots/grok/**"
+  ],
+  "high_risk_categories": [
+    "database-destructive",
+    "auth",
+    "rbac",
+    "payment",
+    "finance",
+    "secrets",
+    "governance",
+    "deployment",
+    "infrastructure"
+  ]
+}
